@@ -1,0 +1,147 @@
+{% extends 'index.html' %}
+{% load static %}
+
+{% block content %}
+
+
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">Clientes Registrados</h1>
+    <p class="mb-4">Aqui encontrara informacion en base al cliente que se registro correctamente </p>
+    <a href="{% url 'nuevo_cliente' %}" class="btn btn-primary btn-icon-split">
+        <span class="icon text-white-50">
+            <i class="fas fa-flag"></i>
+        </span>
+        <span class="text">Nuevo Cliente</span>
+    </a>
+    <br>
+    <br>
+
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Opciones</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Atencion</th>
+                            <th>Cliente</th>
+                            <th>RUC-DNI</th>
+                            <th>Telefono</th>
+                            <th>Correo</th>
+                            <th>Observacion</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+
+
+                    <tbody>
+                        
+                        {% for cliente in clientes %}
+                        <tr>
+                            
+                            <td>{{cliente.atencion}}</td>
+                            <td>{{cliente.cliente}}</td>
+                            <td>{{cliente.ruc_dni}}</td>
+                            <td>{{cliente.telefono}}</td>
+                            <td>{{cliente.correo}}</td>
+                            <td style="text-align: center;"><a href="#" class="btn btn-info btn-circle show-obs-modal" data-cliente-obs="{{ cliente.obs }}">
+                                <i class="fas fa-info-circle"></i>
+                              </a></td>
+                            <td>
+                                <!-- Icono para editar -->
+                                <a href="{% url 'editar_cliente' cliente.id %}" class="btn btn-warning btn-circle">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <!-- Icono para eliminar -->
+                                <a href="{% url 'eliminar_cliente' cliente.id %}"
+                                    class="btn btn-danger btn-circle eliminar-cliente">
+                                    <i class="fas fa-trash-alt"></i>
+                                </a>
+                            </td>
+                            
+                         
+                        </tr>
+                        {% endfor %}
+                        
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- Modal para mostrar la observación del cliente -->
+<div class="modal fade" id="obsModal" tabindex="-1" role="dialog" aria-labelledby="obsModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="obsModalLabel">Observación del Cliente</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" id="obsModalBody">
+          <!-- Aquí se mostrará la observación del cliente -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+    $(document).ready(function() {
+      // Al hacer clic en el botón de mostrar observación
+      $(".show-obs-modal").click(function() {
+        // Obtener la observación del cliente desde el atributo data-cliente-obs
+        var observacion = $(this).data("cliente-obs");
+  
+        // Mostrar la observación del cliente en el modal
+        $("#obsModalBody").text(observacion);
+  
+        // Abrir el modal
+        $("#obsModal").modal("show");
+      });
+    });
+  </script>
+
+<script>
+    $(document).ready(function () {
+        // Función para manejar el clic en el botón de eliminar
+        $('.eliminar-cliente').click(function (event) {
+            event.preventDefault(); // Prevenir el comportamiento predeterminado del enlace
+
+            // Mostrar cuadro de diálogo de confirmación antes de eliminar
+            if (confirm('¿Estás seguro de que deseas eliminar este cliente?')) {
+                // Obtener la URL de eliminación del vendedor desde el atributo "href" del enlace
+                var url = $(this).attr('href');
+
+                // Enviar la solicitud AJAX para eliminar el vendedor
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: {
+                        'csrfmiddlewaretoken': '{{ csrf_token }}',  // Incluir el token CSRF en la solicitud
+                    },
+                    dataType: 'json',
+                    success: function (data) {
+                        // Si la eliminación fue exitosa, actualizamos la tabla eliminando la fila
+                        $(event.target).closest('tr').remove();
+                        alert(data.message); // Mostrar un mensaje de éxito
+                    },
+                    error: function (error) {
+                        console.log(error); // Mostrar cualquier error en la consola
+                        alert('Error al eliminar el cliente'); // Mostrar un mensaje de error
+                    }
+                });
+            }
+        });
+    });
+</script>
+
+
+
+
+
+{% endblock %}

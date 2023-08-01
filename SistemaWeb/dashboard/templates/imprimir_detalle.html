@@ -1,0 +1,325 @@
+{% load static %}
+{% load crispy_forms_tags %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+        integrity="sha512-kjLzfwOexkUAtX+WO/90RHkl17YXzxQ7vqSKCcO//IN8UVJzF8mq+4O7h7Hij3L1/Gnt4NMLBsXsReXFshhvw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link href="{% static 'assets/vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
+    <link
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet">
+
+    <!-- Custom styles for this template-->
+    <link href="{% static 'assets/css/sb-admin-2.min.css' %}" rel="stylesheet">
+    <!-- Custom styles for this page -->
+    <link href="{% static 'vendor/datatables/dataTables.bootstrap4.min.css' %}" rel="stylesheet">
+
+
+</head>
+<style>
+/* Estilos generales de la página */
+ /* Estilos generales de la página */
+ body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .container-fluid {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1, h2 {
+            text-align: center;
+            margin: 0 0 20px;
+        }
+
+        /* Estilos de las columnas */
+        .column-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            margin: -5px; /* Agregamos un margen negativo para reducir el espacio entre columnas */
+        }
+        .column {
+            width: 50%;
+            box-sizing: border-box;
+            padding: 5px; /* Reducimos el padding para aprovechar más espacio */
+        }
+
+        /* Estilos de las tablas */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 1px solid #ccc;
+            margin-bottom: 10px; /* Reducimos el espacio entre tablas */
+        }
+        th, td {
+            padding: 3px; /* Reducimos aún más el padding de las celdas */
+            border: 1px solid #ccc;
+            font-size: 12px; /* Reducimos el tamaño de la fuente para que las tablas sean más compactas */
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .table-title {
+            text-align: center;
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+</style>
+
+<body>
+    <div class="container-fluid">
+        <h1>Detalle de Cotización</h1>
+
+        <div class="column-wrapper">
+            <div class="column">
+                <h2>Orden de Proforma</h2>
+                <TABLE >
+                    <tr>
+                        <th colspan="6" class="table-title">Orden de Proforma</th>
+                    </tr>
+                 
+                    <TR>
+                        <TH>Proforma</TH>
+                        <TD>{{ cotizacion.proforma }}</TD>
+                    </TR>
+                    <TR>
+                        <TH>Fecha de proforma</TH>
+                        <TD>{{ cotizacion.proforma.fecha }}</TD>
+                    </TR>
+                    <TR>
+                        <TH>BU</TH>
+                        <TD>{{ cotizacion.proforma.bu }}</TD>
+                    </TR>
+                    <TR>
+                        <TH>Condicion Pago</TH>
+                        <TD>{{ cotizacion.proforma.condicion_pago }}</TD>
+                    </TR>
+                    <TR>
+                        <TH>Moneda</TH>
+                        <TD>{{ cotizacion.proforma.moneda }}</TD>
+                    </TR>
+                    <TR>
+                        <TH>Validez de O/P</TH>
+                        <TD>{{ cotizacion.proforma.validez }}
+                        </TD>
+                    </TR>
+                    <TR>
+                        <TH>Vendedor</TH>
+                        <TD>{{ cotizacion.proforma.vendedor }}</TD>
+                    </TR>
+                    <TR>
+                        <TH>Correo</TH>
+                        <TD>{{ cotizacion.proforma.correo }}</TD>
+                    </TR>
+                    <TR>
+                        <TH>Celular</TH>
+                        <TD>{{ cotizacion.proforma.celular }}</TD>
+                    </TR>
+                    <TR>
+                        <TH>Actividad</TH>
+                        <TD>{{ cotizacion.proforma.actividad }}</TD>
+                    </TR>
+                    <TR>
+                        <TH>OBS</TH>
+                        <TD>{{ cotizacion.proforma.observacion }}</TD>
+                    </TR>
+
+                </table>
+            </div>
+            <div class="column">
+                <h2>Orden de Proforma</h2>
+                <TABLE class="table table-bordered total-table">
+                    <TR>
+                        <TH>Proforma</TH>
+                        <TD>{{ cotizacion.proforma }}</TD>
+                    </TR>
+                    <TR>
+                        <TH>Fecha de proforma</TH>
+                        <TD>{{ cotizacion.proforma.fecha }}</TD>
+                    </TR>
+                    <TR>
+                        <TH>BU</TH>
+                        <TD>{{ cotizacion.proforma.bu }}</TD>
+                    </TR>
+                    <TR>
+                        <TH>Condicion Pago</TH>
+                        <TD>{{ cotizacion.proforma.condicion_pago }}</TD>
+                    </TR>
+                    <TR>
+                        <TH>Moneda</TH>
+                        <TD>{{ cotizacion.proforma.moneda }}</TD>
+                    </TR>
+                    <TR>
+                        <TH>Validez de O/P</TH>
+                        <TD>{{ cotizacion.proforma.validez }}
+                        </TD>
+                    </TR>
+                    <TR>
+                        <TH>Vendedor</TH>
+                        <TD>{{ cotizacion.proforma.vendedor }}</TD>
+                    </TR>
+                    <TR>
+                        <TH>Correo</TH>
+                        <TD>{{ cotizacion.proforma.correo }}</TD>
+                    </TR>
+                    <TR>
+                        <TH>Celular</TH>
+                        <TD>{{ cotizacion.proforma.celular }}</TD>
+                    </TR>
+                    <TR>
+                        <TH>Actividad</TH>
+                        <TD>{{ cotizacion.proforma.actividad }}</TD>
+                    </TR>
+                    <TR>
+                        <TH>OBS</TH>
+                        <TD>{{ cotizacion.proforma.observacion }}</TD>
+                    </TR>
+
+                </table>
+
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <!-- Formulario para agregar detalles -->
+                <h2>Descripción de la Cotización</h2>
+                <div class="my-4"></div>
+                <div class="card shadow mb-8">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Descripcion</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered descripcion-table" id="dataTable" width="100%"
+                                cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th>item</th>
+                                        <th>cantidad</th>
+                                        <th>Codigo</th>
+                                        <th>Descripcion</th>
+                                        <th>p_unitario</th>
+                                        <th>Disponibilidad</th>
+                                        <th>descuento</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for detalle in detalles %}
+                                    <!-- Contenido de la tabla -->
+                                    <tr>
+                                        <td class="word-wrap">{{ forloop.counter }}</td>
+                                        <td class="word-wrap">{{ detalle.cantidad}}</td>
+                                        <td class="word-wrap">{{detalle.codigo}}</td>
+                                        <td class="word-wrap">{{detalle.descripcion}}</td>
+                                        <td class="word-wrap">{{detalle.precio_unitario}}</td>
+                                        <td class="word-wrap">{{detalle.disponibilidad}}</td>
+                                        <td class="word-wrap">{{detalle.descuento}}</td>
+                                        <td class="word-wrap">{{detalle.precio_total}}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <table class="table table-bordered total-table">
+                            <tbody>
+                                <tr>
+                                    <td colspan="3"></td>
+                                    <td class="word-wrap">Subtotal:</td>
+                                    <td class="word-wrap" id="subtotal">{{ subtotal }}</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3"></td>
+                                    <td class="word-wrap">IGV (18%):</td>
+                                    <td class="word-wrap" id="igv">{{ igv }}</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3"></td>
+                                    <td class="word-wrap">Precio Total:</td>
+                                    <td class="word-wrap" id="precio_total">{{ precio_total }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+
+</body>
+
+
+
+
+<script>
+    function calcularTotales() {
+        console.log("Calculando totales...");
+        // Obtenemos todas las celdas de la columna de "Total"
+        const totalCells = document.querySelectorAll(".descripcion-table td:nth-child(7)");
+        // Convertimos el NodeList a un Array para poder utilizar la función reduce
+        const totalArray = Array.from(totalCells);
+        // Obtenemos los valores de los totales y los convertimos a números
+        const totalValues = totalArray.map(cell => Number(cell.innerText));
+        // Calculamos el subtotal sumando los valores de "Total"
+        const subtotal = totalValues.reduce((acc, value) => acc + value, 0);
+        // Calculamos el IGV (18% del subtotal)
+        const igv = subtotal * 0.18;
+        // Calculamos el precio total sumando el subtotal y el IGV
+        const precioTotal = subtotal + igv;
+        // Actualizamos los valores en las celdas correspondientes
+        document.getElementById("subtotal").innerText = subtotal.toFixed(2);
+        document.getElementById("igv").innerText = igv.toFixed(2);
+        document.getElementById("precio_total").innerText = precioTotal.toFixed(2);
+    }
+
+    // Ejecutamos la función de cálculo una vez que todos los recursos estén cargados
+    window.addEventListener("load", function () {
+        calcularTotales();
+    });
+</script>
+<!-- Enlace al archivo JavaScript de Bootstrap -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<!-- Tu propio script personalizado para calcular totales -->
+
+<!-- Bootstrap core JavaScript-->
+<script src="{% static 'assets/vendor/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'assets/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+<!-- Core plugin JavaScript-->
+<script src="{% static 'assets/vendor/jquery-easing/jquery.easing.min.js' %}"></script>
+
+<!-- Custom scripts for all pages-->
+
+<script src="{% static 'assets/js/sb-admin-2.min.js' %}"></script>
+<!-- Page level plugins -->
+<script src="{% static 'assets/vendor/datatables/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'assets/vendor/datatables/dataTables.bootstrap4.min.js' %}"></script>
+
+<!-- Page level custom scripts -->
+<script src="{% static 'assets/js/demo/datatables-demo.js' %}"></script>
+
+
+</html>

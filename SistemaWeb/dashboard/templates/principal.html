@@ -1,0 +1,145 @@
+{% extends 'index.html' %}
+{% load static %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>Vesperr Bootstrap Template - Index</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+  <!-- Favicons -->
+  <link href="{% static 'assets2/img/favicon.png' %}" rel="icon">
+  <link href="{% static 'assets2/img/apple-touch-icon.png' %}" rel="apple-touch-icon">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="{% static 'assets2/vendor/aos/aos.css' %}" rel="stylesheet">
+  <link href="{% static 'assets2/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+  <link href="{% static 'assets2/vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+  <link href="{% static 'assets2/vendor/boxicons/css/boxicons.min.css' %}" rel="stylesheet">
+  <link href="{% static 'assets2/vendor/glightbox/css/glightbox.min.css' %}" rel="stylesheet">
+  <link href="{% static 'assets2/vendor/remixicon/remixicon.css' %}" rel="stylesheet">
+  <link href="{% static 'assets2/vendor/swiper/swiper-bundle.min.css' %}" rel="stylesheet">
+
+  <!-- Template Main CSS File -->
+  <link href="{% static 'assets2/css/style.css' %}" rel="stylesheet">
+
+  <!-- =======================================================
+  * Template Name: Vesperr
+  * Updated: May 30 2023 with Bootstrap v5.3.0
+  * Template URL: https://bootstrapmade.com/vesperr-free-bootstrap-template/
+  * Author: BootstrapMade.com
+  * License: https://bootstrapmade.com/license/
+  ======================================================== -->
+</head>
+
+<body>
+
+  <!-- ======= Header ======= -->
+  
+  <!-- ======= Hero Section ======= -->
+  <section id="hero" class="d-flex align-items-center">
+
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-6 pt-5 pt-lg-0 order-2 order-lg-1 d-flex flex-column justify-content-center">
+          <h1 data-aos="fade-up">Bienvenido a PeruKater</h1>
+          <h2 data-aos="fade-up" data-aos-delay="400">Aqui podras administrar todos los datos de manera sencilla y eficaz, sin problemas, y a tu comodidad</h2>
+          <div data-aos="fade-up" data-aos-delay="800">
+            <a href="{% url 'proforma'%}" class="btn-get-started scrollto">Inicia rapido</a>
+          </div>
+        </div>
+        <div class="col-lg-6 order-1 order-lg-2 hero-img" data-aos="fade-left" data-aos-delay="200">
+          <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+          <lottie-player src="https://lottie.host/5323571b-6154-442c-83f9-d9c7a4cad553/yp6ATQyvOC.json"  background="transparent"  speed="1"  style="width: 600px; height: 600px;"  loop  autoplay></lottie-player>
+          
+        </div>
+      </div>
+    </div>
+
+  </section><!-- End Hero -->
+
+  <main id="main">
+    <!-- ======= Services Section ======= -->
+    <section id="services" class="services">
+      <div class="container">
+
+        <div class="section-title" data-aos="fade-up">
+          <h2>Servicios</h2>
+          <p>Aqui encontraras diferentes opciones para administrar</p>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6 col-lg-3 d-flex align-items-stretch mb-5 mb-lg-0">
+            <div class="icon-box" data-aos="fade-up" data-aos-delay="100">
+              <div class="icon"><i class="bx bx-briefcase"></i></div>
+              <h4 class="title"><a href="{% url 'vendedor'%}">Vendedor</a></h4>
+              <p class="description">Te mostramos la lista de vendedores actuales.</p>
+            </div>
+          </div>
+
+          <div class="col-md-6 col-lg-3 d-flex align-items-stretch mb-5 mb-lg-0">
+            <div class="icon-box" data-aos="fade-up" data-aos-delay="200">
+              <div class="icon"><i class="bx bx-user"></i></div>
+              <h4 class="title"><a href="{% url 'cliente'%}">Cliente</a></h4>
+              <p class="description">Te mostramos la lista de nuestros clientes actuales.</p>
+            </div>
+          </div>
+
+          <div class="col-md-6 col-lg-3 d-flex align-items-stretch mb-5 mb-lg-0">
+            <div class="icon-box" data-aos="fade-up" data-aos-delay="300">
+              <div class="icon"><i class="bx bx-receipt"></i></div>
+              <h4 class="title"><a href="{% url 'proforma'%}"> Proforma</a></h4>
+              <p class="description">Aca podremos crear una proforma.</p>
+            </div>
+          </div>
+
+          <div class="col-md-6 col-lg-3 d-flex align-items-stretch mb-5 mb-lg-0">
+            <div class="icon-box" data-aos="fade-up" data-aos-delay="400">
+              <div class="icon"><i class="bx bx-dollar-circle"></i></div>
+              <h4 class="title"><a href="{% url 'cotizacion'%}">Cotizacion</a></h4>
+              <p class="description">Aca podremos realizar la cotización.</p>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section><!-- End Services Section -->
+
+    
+
+    
+
+    
+    
+
+  
+
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <!-- Vendor JS Files -->
+  <script src="{% static 'assets2/vendor/purecounter/purecounter_vanilla.js' %}"></script>
+  <script src="{% static 'assets2/vendor/aos/aos.js' %}"></script>
+  <script src="{% static 'assets2/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'assets2/vendor/glightbox/js/glightbox.min.js' %}"></script>
+  <script src="{% static 'assets2/vendor/isotope-layout/isotope.pkgd.min.js' %}"></script>
+  <script src="{% static 'assets2/vendor/swiper/swiper-bundle.min.js' %}"></script>
+  <script src="{% static 'assets2/vendor/php-email-form/validate.js' %}"></script>
+
+  <!-- Template Main JS File -->
+  <script src="{% static 'assets2/js/main.js' %}"></script>
+
+</body>
+
+</html>
+
+{% endblock %}
