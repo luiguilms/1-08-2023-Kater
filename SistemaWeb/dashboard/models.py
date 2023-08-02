@@ -85,9 +85,25 @@ class Cotizacion(models.Model):
 class piezasRepuesto(models.Model):
     nombre = models.CharField(max_length=200)
     codigo = models.CharField(max_length=200)
-    descripcion = models.ImageField(upload_to='descPiezas/', null=True , blank=True)
+    descripcion = models.CharField(max_length=200 , blank=True)
     imagen_tienda = models.ImageField(upload_to='imgPiezas/', null=True , blank=True)
-    precio_soles = models.DecimalField(max_digits=10,decimal_places=2,null=True,blank=True)
+    precio_unitario = models.DecimalField(max_digits=10,decimal_places=2,default=0,blank=True)
+    def __str__(self):
+        return self.nombre
+    
+class Consultoria(models.Model):
+    nombre = models.CharField(max_length=200)
+    codigo = models.CharField(max_length=200)
+    descripcion = models.CharField(max_length=200, null=True , blank=True)
+    precio_unitario = models.DecimalField(max_digits=10,decimal_places=2,default=0,blank=True)
+    def __str__(self):
+        return self.nombre
+    
+class ManodeObra(models.Model):
+    nombre = models.CharField(max_length=200)
+    codigo = models.CharField(max_length=200)
+    descripcion = models.CharField(max_length=200,null=True , blank=True)
+    precio_unitario = models.DecimalField(max_digits=10,decimal_places=2,default=0,blank=True)
     def __str__(self):
         return self.nombre
 
@@ -100,8 +116,8 @@ class descripcionCotizacion(models.Model):
     )
     cotizacion = models.ForeignKey(Cotizacion, on_delete=models.CASCADE)
     cantidad = models.IntegerField()
-    codigo = models.CharField(max_length=20,null=True,blank=True)
-    descripcion = models.ForeignKey(piezasRepuesto,on_delete=models.CASCADE)
+    codigo = models.ForeignKey(piezasRepuesto,on_delete=models.CASCADE,null=True)
+    descripcion = models.CharField(max_length=1000,blank=True)
     precio_unitario = models.DecimalField(max_digits=10,decimal_places=2,null=True,blank=True)
     disponibilidad = models.CharField(max_length=20)
     precio_total = models.DecimalField(max_digits=10,decimal_places=2,null=True,blank=True)

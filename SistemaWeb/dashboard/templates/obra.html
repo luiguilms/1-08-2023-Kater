@@ -1,75 +1,82 @@
 {% extends 'index.html' %}
+{% load static %}
+
 {% block content %}
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 
 <div class="container-fluid">
 
     <!-- Page Heading -->
-    <h1 class="h3 mb-2 text-gray-800">Cotizaciones</h1>
-    <p class="mb-4">Aca se muestran todas las cotizaciones hechas hasta la fecha.</p>
-
-    <a href="{% url 'agregar_cotizacion' %}" class="btn btn-primary mb-3">Agregar nueva Cotizacion</a>
+    <h1 class="h3 mb-2 text-gray-800">Mano de Obra</h1>
+    <p class="mb-4">Informacion sobre Mano de Obra</p>
+    <a href="{% url 'nueva_obra' %}" class="btn btn-primary btn-icon-split">
+        <span class="icon text-white-50">
+            <i class="fas fa-flag"></i>
+        </span>
+        <span class="text">Agregar</span>
+    </a>
+    <br>
+    <br>
 
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Lista de Cotizaciones</h6>
+            <h6 class="m-0 font-weight-bold text-primary">Detalles</h6>
         </div>
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
                         <tr>
-                            <th>Proforma</th>
-                            <th>Fecha de proforma</th>
-                            <th>Cliente</th>
+                            <th>Codigo</th>
+                            <th>Nombre</th>
+                            <th>Descripcion</th>
+                            <th>Precio</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
 
 
                     <tbody>
-                        {% for cotizacion in cotizaciones %}
+                        
+                        {% for manodeobra in obras %}
                         <tr>
-                            <td>{{ cotizacion.proforma }}</td>
-                            <td>{{ cotizacion.proforma.fecha }}</td>
-                            <td>{{ cotizacion.cliente }}</td>
+                            
+                            <td>{{manodeobra.codigo}}</td>
+                            <td>{{manodeobra.nombre}}</td>
+                            <td>{{manodeobra.descripcion}}</td>
+                            <td>{{manodeobra.precio_unitario}}</td>
+                            
                             <td>
                                 <!-- Icono para editar -->
-                                <a href="{% url 'editar_cotizacion' cotizacion.id %}" class="btn btn-warning btn-circle">
+                                <a href="{% url 'editar_obra' manodeobra.id %}" class="btn btn-warning btn-circle">
                                     <i class="fas fa-edit"></i>
                                 </a>
-
-
                                 <!-- Icono para eliminar -->
-                                <a href="{% url 'eliminar_cotizacion' cotizacion.id %}"
-                                    class="btn btn-danger btn-circle eliminar-cotizacion">
+                                <a href="{% url 'eliminar_obra' manodeobra.id %}"
+                                    class="btn btn-danger btn-circle eliminar-manodeobra">
                                     <i class="fas fa-trash-alt"></i>
                                 </a>
-                                <a href="{% url 'detalle_cotizacion' cotizacion.id %}" class="btn btn-info btn-circle">
-                                    <i class="fas fa-plus"></i>
-                                </a>
-
-
                             </td>
+                            
+                         
                         </tr>
                         {% endfor %}
+                        
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
-    
-
-</div>
 <script>
     $(document).ready(function () {
         // Función para manejar el clic en el botón de eliminar
-        $('.eliminar-cotizacion').click(function (event) {
+        $('.eliminar-cliente').click(function (event) {
             event.preventDefault(); // Prevenir el comportamiento predeterminado del enlace
 
             // Mostrar cuadro de diálogo de confirmación antes de eliminar
-            if (confirm('¿Estás seguro de que deseas eliminar esta cotizacion?')) {
+            if (confirm('¿Estás seguro de que deseas eliminar este cliente?')) {
                 // Obtener la URL de eliminación del vendedor desde el atributo "href" del enlace
                 var url = $(this).attr('href');
 
@@ -88,12 +95,16 @@
                     },
                     error: function (error) {
                         console.log(error); // Mostrar cualquier error en la consola
-                        alert('Error al eliminar la cotizacion'); // Mostrar un mensaje de error
+                        alert('Error al eliminar el cliente'); // Mostrar un mensaje de error
                     }
                 });
             }
         });
     });
 </script>
+
+
+
+
 
 {% endblock %}

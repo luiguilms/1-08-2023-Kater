@@ -38,7 +38,18 @@ urlpatterns = [
     path('cotizacion/<int:pk>/detalle/<int:detalle_id>/', views.detalle_cotizacion, name='editar_detalle'),
     path('cotizacion/eliminar_detalle/<int:pk>/', views.DetalleEliminarView.as_view(), name='eliminar_detalle'),
     path('cotizacion/generar_pdf/<int:pk>/', views.generar_pdf, name='generar_pdf'),
-
+    path('mantenimiento/',views.MantenimientoView.as_view(), name='mantenimiento'),
+    path('mantenimiento/nuevo/', views.MantenimientoAgregarView.as_view(), name='nuevo_mantenimiento'),
+    path('mantenimiento/editar/<int:pk>/', views.MantenimientoEditarView.as_view(), name='editar_mantenimiento'),
+    path('mantenimineto/eliminar/<int:pk>/', views.MantenimientoEliminarView.as_view(), name='eliminar_mantenimiento'),
+    path('consultoria/',views.ConsultoriaView.as_view(), name='consultoria'),
+    path('consultoria/nuevo/', views.ConsultoriaAgregarView.as_view(), name='nueva_consultoria'),
+    path('consultoria/editar/<int:pk>/', views.ConsultoriaEditarView.as_view(), name='editar_consultoria'),
+    path('consultoria/eliminar/<int:pk>/', views.ConsultoriaEliminarView.as_view(), name='eliminar_consultoria'),
+    path('obra/',views.ManoDeObraView.as_view(), name='manodeobra'),
+    path('obra/nuevo/', views.ManoDeObraAgregarView.as_view(), name='nueva_obra'),
+    path('obra/editar/<int:pk>/', views.ManoDeObraEditarView.as_view(), name='editar_obra'),
+    path('obra/eliminar/<int:pk>/', views.ManoDeObraEliminarView.as_view(), name='eliminar_obra'),
     path('cambio/', views.cambio, name='cambio'),
 
 

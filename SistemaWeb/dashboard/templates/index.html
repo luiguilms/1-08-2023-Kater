@@ -14,6 +14,7 @@
     <title>Perú Kater - Cotizador</title>
 
     <!-- Custom fonts for this template-->
+    <link href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-kjLzfwOexkUAtX+WO/90RHkl17YXzxQ7vqSKCcO//IN8UVJzF8mq+4O7h7Hij3L1/Gnt4NMLBsXsReXFshhvw==" crossorigin="anonymous" referrerpolicy="no-referrer" >
     <link href="{% static 'assets/vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
     <link
@@ -114,9 +115,9 @@
                 <div id="collapsePages" class="collapse" aria-labelledby="headingPages"
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item" href="login.html">Mantenimiento</a>
-                        <a class="collapse-item" href="login.html">Consultoria</a>
-                        <a class="collapse-item" href="login.html">Mano de obra</a>
+                        <a class="collapse-item" href="{% url 'mantenimiento'%}">Mantenimiento</a>
+                        <a class="collapse-item" href="{% url 'consultoria'%}">Consultoria</a>
+                        <a class="collapse-item" href="{% url 'manodeobra'%}">Mano de obra</a>
                         <div class="collapse-divider"></div>
                    
                     </div>
@@ -152,19 +153,7 @@
                         <i class="fa fa-bars"></i>
                     </button>
 
-                    <!-- Topbar Search -->
-                    <form
-                        class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
-                        <div class="input-group">
-                            <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
-                                aria-label="Search" aria-describedby="basic-addon2">
-                            <div class="input-group-append">
-                                <button class="btn btn-primary" type="button">
-                                    <i class="fas fa-search fa-sm"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </form>
+                    
 
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">

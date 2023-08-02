@@ -3,14 +3,15 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-<div class="container">
+<div class="container-fluid">
     <h1>Agregar Cotización</h1>
 
     <form method="post">
         {% csrf_token %}
         <div class="form-group">
             <label for="proforma">Proforma:</label>
-            <select class="form-control select2" id="proforma" name="proforma" data-minimum-input-length="1">
+            <select class=" form-control js-example-basic-multiple" id="proforma" name="proforma" >
+                <option value="" selected>Selecciona una proforma...</option> <!-- Agrega una opción por defecto -->
                 {% for proforma in lista_proformas %}
                 <option value="{{ proforma.id }}" {% if proforma.id == cotizacion.proforma.id %}selected{% endif %}>{{ proforma }}</option>
                 {% endfor %}
@@ -30,9 +31,13 @@
 </div>
 <script>
     $(document).ready(function() {
-        // Inicializar Select2 en el campo con la clase "select2"
-        $('.select2').select2();
+        $('.js-example-basic-multiple').select2({
+            minimumInputLength: 1, // Solo muestra resultados después de ingresar al menos un carácter
+            placeholder: 'Escribe para buscar una proforma...', // Mensaje en el campo de búsqueda
+            allowClear: true, // Permite borrar la selección
+        });
     });
-    </script>
+</script>
+
     
 {% endblock %}

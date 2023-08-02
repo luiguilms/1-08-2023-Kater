@@ -1,13 +1,11 @@
 from datetime import date
 import datetime
 from django import forms
-from .models import Cliente, Cotizacion, Vendedor, Direccion, Moneda, Pago, Bu, Proforma, piezasRepuesto, descripcionCotizacion
+from .models import *
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from django_select2.forms import Select2Widget
-from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Submit
-from dal import autocomplete
+from django_select2 import forms as s2forms
+
 
 class ClienteForm(forms.ModelForm):
     class Meta:
@@ -92,18 +90,40 @@ class PiezasRepuestoForm(forms.ModelForm):
         model = piezasRepuesto
         fields = '__all__'
 
-
+class descripcionWidget(s2forms.ModelSelect2Widget):
+    search_fields = [
+        "codigo__icontains"
+    ]
+    def label_from_instance(self, obj):
+        return obj.codigo 
+    
 class DescripcionCotizacionForm(forms.ModelForm):
 
     class Meta:
         model = descripcionCotizacion
         fields = '__all__'
         widgets = {
+            'codigo':descripcionWidget,
             'cotizacion': forms.HiddenInput(),
-            'codigo': forms.HiddenInput(),
+            'descripcion': forms.HiddenInput(),
             'precio_unitario': forms.HiddenInput(),
             # Hace que el campo Cotizacion sea oculto para el usuario
             'precio_total': forms.HiddenInput(),
             'descuento': forms.Select(attrs={'required': 'required'}),
 
         }
+
+class MantenimientoForm(forms.ModelForm):
+    class Meta:
+        model = piezasRepuesto
+        fields = '__all__'
+
+class ConsultoriaForm(forms.ModelForm):
+    class Meta:
+        model = Consultoria
+        fields = '__all__'
+
+class ManoDeObraForm(forms.ModelForm):
+    class Meta:
+        model = ManodeObra
+        fields = '__all__'

@@ -10,7 +10,9 @@ from django.contrib.auth.views import PasswordResetView
 from .models import *
 from django.contrib.auth.decorators import login_required
 import requests
+from django.template.loader import render_to_string
 import json
+
 from decimal import Decimal
 from django.utils.text import slugify
 
@@ -47,13 +49,22 @@ class CustomPasswordResetView(PasswordResetView):
 
 
 class ClienteView(View):
-
     def get(self, request):
         listaClientes = Cliente.objects.all()
         formCliente = ClienteForm()
+        direcciones = Direccion.objects.all()
+
+        direcciones_por_cliente = {}  # Crear el diccionario aquí
+
+        for direccion in direcciones:
+            if direccion.cliente.id not in direcciones_por_cliente:
+                direcciones_por_cliente[direccion.cliente.id] = []
+            direcciones_por_cliente[direccion.cliente.id].append(direccion)
+
         context = {
             'clientes': listaClientes,
-            'formClientes': formCliente
+            'formClientes': formCliente,
+            'direcciones_por_cliente': direcciones_por_cliente,
         }
         return render(request, 'clientes.html', context)
 
@@ -582,3 +593,186 @@ def generar_pdf(request, pk):
     if pisaStatus.err:
         return HttpResponse('Hubo un error al generar el PDF')
     return response
+
+#----------------MANTENIMIENTO TABLA ----------------------------
+class MantenimientoView(View):
+
+    def get(self, request):
+        listaMantenimiento = piezasRepuesto.objects.all()
+        context = {
+            'mantenimientos': listaMantenimiento
+        }
+        return render(request, 'mantenimiento.html', context)
+    
+class  MantenimientoAgregarView(View):
+
+    def get(self, request):
+        formMantenimiento = MantenimientoForm()
+        context = {
+            'formMantenimiento': formMantenimiento,
+        }
+        return render(request, 'agregar_mantenimiento.html', context)
+
+    def post(self, request):
+        formMantenimiento = MantenimientoForm(request.POST)
+        if formMantenimiento.is_valid():
+            formMantenimiento.save()
+            # Redirige a la lista de clientes después de guardar correctamente
+            return redirect('mantenimiento')
+
+        context = {
+            'formMantenimiento': formMantenimiento,
+        }
+        return render(request, 'agregar_mantenimiento.html', context)
+class MantenimientoEditarView(View):
+
+    def get(self, request, pk):
+        producto = get_object_or_404(piezasRepuesto, pk=pk)
+        formMantenimiento = MantenimientoForm(instance=producto)
+        context = {
+            'formMantenimiento': formMantenimiento,
+        }
+        return render(request, 'agregar_mantenimiento.html', context)
+
+    def post(self, request, pk):
+        producto = get_object_or_404(piezasRepuesto, pk=pk)
+        formMantenimiento = MantenimientoForm(request.POST, instance=producto)
+        if formMantenimiento.is_valid():
+            formMantenimiento.save()
+            # Redirige a la lista de clientes después de guardar correctamente
+            return redirect('mantenimiento')
+
+        context = {
+            'formMantenimieno': formMantenimiento,
+        }
+        return render(request, 'agregar_mantenimiento.html', context)
+
+
+class MantenimientoEliminarView(View):
+
+    def post(self, request, pk):
+        producto = get_object_or_404(piezasRepuesto, pk=pk)
+        producto.delete()
+        return JsonResponse({'message': 'Producto eliminado correctamente'})
+#----------------MANTENIMIENTO TABLA ----------------------------
+class ConsultoriaView(View):
+
+    def get(self, request):
+        listaConsultoria = Consultoria.objects.all()
+        context = {
+            'consultorias': listaConsultoria
+        }
+        return render(request, 'consultoria.html', context)
+    
+class ConsultoriaAgregarView(View):
+
+    def get(self, request):
+        formConsultoria = ConsultoriaForm()
+        context = {
+            'formConsultoria': formConsultoria,
+        }
+        return render(request, 'agregar_consultoria.html', context)
+
+    def post(self, request):
+        formConsultoria = ConsultoriaForm(request.POST)
+        if formConsultoria.is_valid():
+            formConsultoria.save()
+            # Redirige a la lista de clientes después de guardar correctamente
+            return redirect('consultoria')
+
+        context = {
+            'formConsultoria': formConsultoria,
+        }
+        return render(request, 'agregar_consultoria.html', context)
+
+
+class ConsultoriaEditarView(View):
+
+    def get(self, request, pk):
+        consultoria = get_object_or_404(Consultoria, pk=pk)
+        formConsultoria = ConsultoriaForm(instance=consultoria)
+        context = {
+            'formConsultoria': formConsultoria,
+        }
+        return render(request, 'agregar_consultoria.html', context)
+
+    def post(self, request, pk):
+        consultoria = get_object_or_404(Consultoria, pk=pk)
+        formConsultoria = ConsultoriaForm(request.POST, instance=consultoria)
+        if formConsultoria.is_valid():
+            formConsultoria.save()
+            # Redirige a la lista de clientes después de guardar correctamente
+            return redirect('consultoria')
+
+        context = {
+            'formConsultoria': formConsultoria,
+        }
+        return render(request, 'agregar_consultoria.html', context)
+    
+class ConsultoriaEliminarView(View):
+
+    def post(self, request, pk):
+        consultoria = get_object_or_404(Consultoria, pk=pk)
+        consultoria.delete()
+        return JsonResponse({'message': 'Consultoria eliminada correctamente'})
+#----------------MANTENIMIENTO TABLA ----------------------------
+class ManoDeObraView(View):
+
+    def get(self, request):
+        listaManodeobras = ManodeObra.objects.all()
+        context = {
+            'obras': listaManodeobras
+        }
+        return render(request, 'obra.html', context)
+    
+class ManoDeObraAgregarView(View):
+
+    def get(self, request):
+        formManodeObra = ManoDeObraForm()
+        context = {
+            'formManodeObra': formManodeObra,
+        }
+        return render(request, 'agregar_obra.html', context)
+
+    def post(self, request):
+        formManodeObra = ManoDeObraForm(request.POST)
+        if formManodeObra.is_valid():
+            formManodeObra.save()
+            # Redirige a la lista de clientes después de guardar correctamente
+            return redirect('manodeobra')
+
+        context = {
+            'formManodeObra': formManodeObra,
+        }
+        return render(request, 'agregar_obra.html', context)
+
+
+class ManoDeObraEditarView(View):
+
+    def get(self, request, pk):
+        manodeobra = get_object_or_404(ManodeObra, pk=pk)
+        formManodeObra = ManoDeObraForm(instance=manodeobra)
+        context = {
+            'formManodeObra': formManodeObra,
+        }
+        return render(request, 'agregar_obra.html', context)
+
+    def post(self, request, pk):
+        manodeobra = get_object_or_404(ManodeObra, pk=pk)
+        formManodeObra = ManoDeObraForm(request.POST, instance=manodeobra)
+        if formManodeObra.is_valid():
+            formManodeObra.save()
+            # Redirige a la lista de clientes después de guardar correctamente
+            return redirect('manodeobra')
+
+        context = {
+            'formManodeObra': formManodeObra,
+        }
+        return render(request, 'agregar_obra.html', context)
+    
+class ManoDeObraEliminarView(View):
+
+    def post(self, request, pk):
+        manodeobra = get_object_or_404(ManodeObra, pk=pk)
+        manodeobra.delete()
+        return JsonResponse({'message': 'Mano De obra eliminada correctamente'})
