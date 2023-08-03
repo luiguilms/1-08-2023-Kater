@@ -51,6 +51,8 @@ urlpatterns = [
     path('obra/editar/<int:pk>/', views.ManoDeObraEditarView.as_view(), name='editar_obra'),
     path('obra/eliminar/<int:pk>/', views.ManoDeObraEliminarView.as_view(), name='eliminar_obra'),
     path('cambio/', views.cambio, name='cambio'),
+    path('agregar_direccion/', views.agregar_direccion, name='agregar_direccion'),
+
 
 
 

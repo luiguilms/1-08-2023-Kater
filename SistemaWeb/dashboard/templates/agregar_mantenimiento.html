@@ -62,7 +62,7 @@
 <div class="container">
   <h1>Nuevo Producto</h1>
 
-  <form method="post">
+  <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {{ formMantenimiento |crispy }}  <!-- Asegúrate de utilizar formCliente aquí -->
     <button type="submit" class="btn btn-primary">Guardar</button>

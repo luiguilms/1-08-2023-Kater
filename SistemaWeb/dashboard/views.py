@@ -614,7 +614,7 @@ class  MantenimientoAgregarView(View):
         return render(request, 'agregar_mantenimiento.html', context)
 
     def post(self, request):
-        formMantenimiento = MantenimientoForm(request.POST)
+        formMantenimiento = MantenimientoForm(request.POST,request.FILES)
         if formMantenimiento.is_valid():
             formMantenimiento.save()
             # Redirige a la lista de clientes después de guardar correctamente
@@ -636,14 +636,14 @@ class MantenimientoEditarView(View):
 
     def post(self, request, pk):
         producto = get_object_or_404(piezasRepuesto, pk=pk)
-        formMantenimiento = MantenimientoForm(request.POST, instance=producto)
+        formMantenimiento = MantenimientoForm(request.POST,request.FILES, instance=producto)
         if formMantenimiento.is_valid():
             formMantenimiento.save()
             # Redirige a la lista de clientes después de guardar correctamente
             return redirect('mantenimiento')
 
         context = {
-            'formMantenimieno': formMantenimiento,
+            'formMantenimiento': formMantenimiento,
         }
         return render(request, 'agregar_mantenimiento.html', context)
 
@@ -776,3 +776,21 @@ class ManoDeObraEliminarView(View):
         manodeobra = get_object_or_404(ManodeObra, pk=pk)
         manodeobra.delete()
         return JsonResponse({'message': 'Mano De obra eliminada correctamente'})
+    
+def agregar_direccion(request):
+    if request.method == 'POST':
+        cliente_id = request.POST.get('cliente_id')
+        direccion_text = request.POST.get('direccion')
+
+        try:
+            cliente = Cliente.objects.get(id=cliente_id)
+            direccion = Direccion(cliente=cliente, direccion=direccion_text)
+            direccion.save()
+
+            return JsonResponse({'message': 'Dirección agregada correctamente.'})
+        except Cliente.DoesNotExist:
+            return JsonResponse({'message': 'Cliente no encontrado.'})
+        except Exception as e:
+            return JsonResponse({'message': 'Error al agregar la dirección.'})
+
+    return redirect('cliente')  # Cambia esto a la URL correcta para redirigir después de agregar la dirección
