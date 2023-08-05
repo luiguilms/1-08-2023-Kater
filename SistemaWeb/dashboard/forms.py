@@ -70,6 +70,59 @@ class ProformaForm(forms.ModelForm):
             return date.today()
         return fecha
 
+class ProformaConsultoriaForm(forms.ModelForm):
+    class Meta:
+        model = ProformaConsultoria
+        fields = '__all__'
+
+    fecha = forms.DateField(
+        label='Fecha O/P', widget=forms.DateInput(attrs={'type': 'date'}))
+
+    # Añadimos los campos de correo y celular como no requeridos y ocultos
+    correo = forms.EmailField(required=False, widget=forms.HiddenInput())
+    celular = forms.CharField(required=False, widget=forms.HiddenInput())
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # Si el formulario no tiene una instancia (es decir, es para agregar una nueva proforma),
+        # configuramos el valor del campo fecha en la fecha actual
+        if not self.instance.pk:
+            self.initial['fecha'] = date.today()
+
+    def clean_fecha(self):
+        # Si se seleccionó "Hoy", establecer la fecha actual en el campo de fecha
+        fecha = self.cleaned_data['fecha']
+        if fecha == date.today():
+            return date.today()
+        return fecha
+
+class ProformaManoDeObraForm(forms.ModelForm):
+    class Meta:
+        model = ProformaManoDeObra
+        fields = '__all__'
+
+    fecha = forms.DateField(
+        label='Fecha O/P', widget=forms.DateInput(attrs={'type': 'date'}))
+
+    # Añadimos los campos de correo y celular como no requeridos y ocultos
+    correo = forms.EmailField(required=False, widget=forms.HiddenInput())
+    celular = forms.CharField(required=False, widget=forms.HiddenInput())
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # Si el formulario no tiene una instancia (es decir, es para agregar una nueva proforma),
+        # configuramos el valor del campo fecha en la fecha actual
+        if not self.instance.pk:
+            self.initial['fecha'] = date.today()
+
+    def clean_fecha(self):
+        # Si se seleccionó "Hoy", establecer la fecha actual en el campo de fecha
+        fecha = self.cleaned_data['fecha']
+        if fecha == date.today():
+            return date.today()
+        return fecha
 
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
@@ -95,23 +148,22 @@ class descripcionWidget(s2forms.ModelSelect2Widget):
         "codigo__icontains"
     ]
     def label_from_instance(self, obj):
-        return obj.codigo 
+        return obj.codigo
     
 class DescripcionCotizacionForm(forms.ModelForm):
-
     class Meta:
         model = descripcionCotizacion
         fields = '__all__'
         widgets = {
-            'codigo':descripcionWidget,
             'cotizacion': forms.HiddenInput(),
-            'descripcion': forms.HiddenInput(),
+            'codigo': descripcionWidget,
+            'descripcion' :forms.HiddenInput(),
             'precio_unitario': forms.HiddenInput(),
-            # Hace que el campo Cotizacion sea oculto para el usuario
             'precio_total': forms.HiddenInput(),
             'descuento': forms.Select(attrs={'required': 'required'}),
-
         }
+    
+
 
 class MantenimientoForm(forms.ModelForm):
     class Meta:

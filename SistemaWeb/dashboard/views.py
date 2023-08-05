@@ -472,7 +472,7 @@ def detalle_cotizacion(request, pk, detalle_id=None):
         form = DescripcionCotizacionForm(request.POST, instance=detalle)
         if form.is_valid():
             nuevo_detalle = form.save(commit=False)
-            nuevo_detalle.cotizacion = cotizacion  # Asignar la cotización al nuevo detalle
+            nuevo_detalle.cotizacion = cotizacion 
             if cotizacion.proforma.moneda.tipo == 'DOLARES':
                 nuevo_detalle.precio_unitario /= Decimal(pen_rate)
             nuevo_detalle.save()
@@ -500,6 +500,7 @@ def detalle_cotizacion(request, pk, detalle_id=None):
         'usd_rate': usd_rate
     }
     return render(request, 'detalle_cotizacion.html', context)
+
 # ------------FIN COTIZACION-------------------
 
 
@@ -794,3 +795,139 @@ def agregar_direccion(request):
             return JsonResponse({'message': 'Error al agregar la dirección.'})
 
     return redirect('cliente')  # Cambia esto a la URL correcta para redirigir después de agregar la dirección
+
+class ProformaConsultoriaView(View):
+
+    def get(self, request):
+        listaProformas = ProformaConsultoria.objects.all()
+        context = {
+            'proformasConsultoria': listaProformas
+        }
+        return render(request, 'proforma_consultoria.html', context)
+
+
+class ProformaConsultoriaAgregarView(View):
+
+    def get(self, request):
+        # Obtener las listas de objetos para cada modelo
+        lista_bu = Bu.objects.all()
+        lista_pago = Pago.objects.all()
+        lista_moneda = Moneda.objects.all()
+        lista_vendedor = Vendedor.objects.all()
+
+        # Crear el formulario y ocultar los campos de "correo" y "celular"
+        formProformaConsultoria = ProformaConsultoriaForm()
+        formProformaConsultoria.fields['correo'].widget.attrs['hidden'] = True
+        formProformaConsultoria.fields['celular'].widget.attrs['hidden'] = True
+
+        context = {
+            'formProformaConsultoria': formProformaConsultoria,
+            'lista_bu': lista_bu,
+            'lista_pago': lista_pago,
+            'lista_moneda': lista_moneda,
+            'lista_vendedor': lista_vendedor,
+        }
+        return render(request, 'agregar_proforma_consultoria.html', context)
+
+    def post(self, request):
+        formProformaConsultoria = ProformaConsultoriaForm(request.POST)
+        if formProformaConsultoria.is_valid():
+            formProformaConsultoria.save()
+            return redirect('proformaconsultoria')
+
+        # Si el formulario no es válido, volvemos a mostrarlo con los errores
+        lista_bu = Bu.objects.all()
+        lista_pago = Pago.objects.all()
+        lista_moneda = Moneda.objects.all()
+        lista_vendedor = Vendedor.objects.all()
+
+        # Ocultar los campos de "correo" y "celular"
+        formProformaConsultoria.fields['correo'].widget.attrs['hidden'] = True
+        formProformaConsultoria.fields['celular'].widget.attrs['hidden'] = True
+
+        context = {
+            'formProformaConsultoria': formProformaConsultoria,
+            'lista_bu': lista_bu,
+            'lista_pago': lista_pago,
+            'lista_moneda': lista_moneda,
+            'lista_vendedor': lista_vendedor,
+        }
+        return render(request, 'agregar_proforma_consultoria.html', context)
+
+
+class ProformaConsultoriaEditarView(View):
+    def get(self, request, pk):
+        proformaConsultoria = get_object_or_404(ProformaConsultoria, pk=pk)
+        formProformaConsultoria = ProformaConsultoriaForm(instance=proformaConsultoria)
+
+        # Obtener las listas de objetos para cada modelo
+        lista_bu = Bu.objects.all()
+        lista_pago = Pago.objects.all()
+        lista_moneda = Moneda.objects.all()
+        lista_vendedor = Vendedor.objects.all()
+
+        context = {
+            'formProformaConsultoria': formProformaConsultoria,
+            'proformaConsultoria': proformaConsultoria,
+            'lista_bu': lista_bu,
+            'lista_pago': lista_pago,
+            'lista_moneda': lista_moneda,
+            'lista_vendedor': lista_vendedor,
+        }
+
+        return render(request, 'agregar_proforma_consultoria.html', context)
+
+    def post(self, request, pk):
+        proformaConsultoria = get_object_or_404(ProformaConsultoria, pk=pk)
+        formProformaConsultoria = ProformaConsultoriaForm(request.POST, instance=proformaConsultoria)
+
+        if formProformaConsultoria.is_valid():
+            formProformaConsultoria.save()
+            return redirect('proformaconsultoria')
+
+        # Si el formulario no es válido, volvemos a mostrarlo con los errores
+        lista_bu = Bu.objects.all()
+        lista_pago = Pago.objects.all()
+        lista_moneda = Moneda.objects.all()
+        lista_vendedor = Vendedor.objects.all()
+
+        context = {
+            'formProformaConsultoria': formProformaConsultoria,
+            'proformaConsultoria': proformaConsultoria,
+            'lista_bu': lista_bu,
+            'lista_pago': lista_pago,
+            'lista_moneda': lista_moneda,
+            'lista_vendedor': lista_vendedor,
+        }
+
+        return render(request, 'agregar_proforma_consultoria.html', context)
+
+
+
+
+class ProformaConsultoriaEliminarView(View):
+
+    def post(self, request, pk):
+        proformaConsultoria = get_object_or_404(ProformaConsultoria, pk=pk)
+        proformaConsultoria.delete()
+        return JsonResponse({'message': 'Proforma eliminada correctamente'})
+    
+def duplicar_proforma_consultoria(request, proforma_id):
+    original_proforma_consultoria = ProformaConsultoria.objects.get(pk=proforma_id)
+    
+    # Crear una nueva instancia de ProformaConsultoria con los mismos atributos que la original
+    nueva_proforma_consultoria = ProformaConsultoria.objects.create(
+        fecha=original_proforma_consultoria.fecha,
+        bu=original_proforma_consultoria.bu,
+        condicion_pago=original_proforma_consultoria.condicion_pago,
+        moneda=original_proforma_consultoria.moneda,
+        validez=original_proforma_consultoria.validez,
+        vendedor=original_proforma_consultoria.vendedor,
+        correo=original_proforma_consultoria.correo,
+        celular=original_proforma_consultoria.celular,
+        actividad=original_proforma_consultoria.actividad,
+        observacion=original_proforma_consultoria.observacion
+        # ... Copia otros campos si es necesario
+    )
+    
+    return redirect('proformaconsultoria')
