@@ -5,15 +5,15 @@
 <div class="container-fluid">
 
     <!-- Page Heading -->
-    <h1 class="h3 mb-2 text-gray-800">Cotizaciones</h1>
+    <h1 class="h3 mb-2 text-gray-800">Cotizaciones de Mano de obra</h1>
     <p class="mb-4">Aca se muestran todas las cotizaciones hechas hasta la fecha.</p>
 
-    <a href="{% url 'agregar_cotizacion' %}" class="btn btn-primary mb-3">Agregar nueva Cotizacion</a>
+    <a href="{% url 'agregar_cotizacion_obra' %}" class="btn btn-primary mb-3">Agregar nueva Cotizacion</a>
 
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Lista de Cotizaciones de diagnostico y mantenimiento</h6>
+            <h6 class="m-0 font-weight-bold text-primary">Lista de Cotizaciones de Mano de obra</h6>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -29,24 +29,24 @@
 
 
                     <tbody>
-                        {% for cotizacion in cotizaciones %}
+                        {% for cotizacion in cotizacionesObra %}
                         <tr>
                             <td>{{ cotizacion.proforma }}</td>
                             <td>{{ cotizacion.proforma.fecha }}</td>
                             <td>{{ cotizacion.cliente }}</td>
                             <td>
                                 <!-- Icono para editar -->
-                                <a href="{% url 'editar_cotizacion' cotizacion.id %}" class="btn btn-warning btn-circle">
+                                <a href="{% url 'editar_cotizacion_obra' cotizacion.id %}" class="btn btn-warning btn-circle">
                                     <i class="fas fa-edit"></i>
                                 </a>
 
 
                                 <!-- Icono para eliminar -->
-                                <a href="{% url 'eliminar_cotizacion' cotizacion.id %}"
-                                    class="btn btn-danger btn-circle eliminar-cotizacion">
+                                <a href="{% url 'eliminar_cotizacion_obra' cotizacion.id %}"
+                                    class="btn btn-danger btn-circle eliminar-cotizacion-obra">
                                     <i class="fas fa-trash-alt"></i>
                                 </a>
-                                <a href="{% url 'detalle_cotizacion' cotizacion.id %}" class="btn btn-info btn-circle">
+                                <a href="{% url 'detalle_cotizacion_obra' cotizacion.id %}" class="btn btn-info btn-circle">
                                     <i class="fas fa-plus"></i>
                                 </a>
 
@@ -65,7 +65,7 @@
 <script>
     $(document).ready(function () {
         // Función para manejar el clic en el botón de eliminar
-        $('.eliminar-cotizacion').click(function (event) {
+        $('.eliminar-cotizacion-obra').click(function (event) {
             event.preventDefault(); // Prevenir el comportamiento predeterminado del enlace
 
             // Mostrar cuadro de diálogo de confirmación antes de eliminar

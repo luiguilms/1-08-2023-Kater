@@ -504,38 +504,6 @@ def detalle_cotizacion(request, pk, detalle_id=None):
 # ------------FIN COTIZACION-------------------
 
 
-def cambio(request):
-    # URL de la API que proporciona las tasas de cambio
-    url = "https://openexchangerates.org/api/latest.json?app_id=7d48f3c6338b4e96838cf8d894162b40&symbols=PEN,USD"
-
-    try:
-        # Realizar la solicitud HTTP para obtener el JSON
-        response = requests.get(url)
-
-        # Verificar si la solicitud fue exitosa (código de estado 200)
-        if response.status_code == 200:
-            # Analizar los datos JSON
-            data = json.loads(response.text)
-
-            # Obtener los valores "rates"
-            rates = data["rates"]
-            pen_rate = rates.get("PEN")
-            usd_rate = rates.get("USD")
-        else:
-            # Si hay un error en la solicitud, puedes manejarlo aquí
-            pen_rate = None
-            usd_rate = None
-
-    except requests.exceptions.RequestException as e:
-        # Si hay un error en la solicitud, puedes manejarlo aquí
-        pen_rate = None
-        usd_rate = None
-
-    # Pasar los valores como contexto al template
-    return render(request, 'cambio.html', {
-        'pen_rate': pen_rate,
-        'usd_rate': usd_rate
-    })
 
 
 
@@ -931,3 +899,483 @@ def duplicar_proforma_consultoria(request, proforma_id):
     )
     
     return redirect('proformaconsultoria')
+
+
+class ProformaManoDeObraView(View):
+
+    def get(self, request):
+        listaProformas = ProformaManoDeObra.objects.all()
+        context = {
+            'proformasObra': listaProformas
+        }
+        return render(request, 'proforma_obra.html', context)
+
+
+class ProformaManoDeObraAgregarView(View):
+
+    def get(self, request):
+        # Obtener las listas de objetos para cada modelo
+        lista_bu = Bu.objects.all()
+        lista_pago = Pago.objects.all()
+        lista_moneda = Moneda.objects.all()
+        lista_vendedor = Vendedor.objects.all()
+
+        # Crear el formulario y ocultar los campos de "correo" y "celular"
+        formProformaManoDeObra = ProformaManoDeObraForm()
+        formProformaManoDeObra.fields['correo'].widget.attrs['hidden'] = True
+        formProformaManoDeObra.fields['celular'].widget.attrs['hidden'] = True
+
+        context = {
+            'formProformaManoDeObra': formProformaManoDeObra,
+            'lista_bu': lista_bu,
+            'lista_pago': lista_pago,
+            'lista_moneda': lista_moneda,
+            'lista_vendedor': lista_vendedor,
+        }
+        return render(request, 'agregar_proforma_obra.html', context)
+
+    def post(self, request):
+        formProformaManoDeObra = ProformaManoDeObraForm(request.POST)
+        if formProformaManoDeObra.is_valid():
+            formProformaManoDeObra.save()
+            return redirect('proformamanodeobra')
+
+        # Si el formulario no es válido, volvemos a mostrarlo con los errores
+        lista_bu = Bu.objects.all()
+        lista_pago = Pago.objects.all()
+        lista_moneda = Moneda.objects.all()
+        lista_vendedor = Vendedor.objects.all()
+
+        # Ocultar los campos de "correo" y "celular"
+        formProformaManoDeObra.fields['correo'].widget.attrs['hidden'] = True
+        formProformaManoDeObra.fields['celular'].widget.attrs['hidden'] = True
+
+        context = {
+            'formProformaManoDeObra': formProformaManoDeObra,
+            'lista_bu': lista_bu,
+            'lista_pago': lista_pago,
+            'lista_moneda': lista_moneda,
+            'lista_vendedor': lista_vendedor,
+        }
+        return render(request, 'agregar_proforma_obra.html', context)
+
+
+class ProformaManoDeObraEditarView(View):
+    def get(self, request, pk):
+        proformaManoDeObra = get_object_or_404(ProformaManoDeObra, pk=pk)
+        formProformaManoDeObra = ProformaManoDeObraForm(instance=proformaManoDeObra)
+
+        # Obtener las listas de objetos para cada modelo
+        lista_bu = Bu.objects.all()
+        lista_pago = Pago.objects.all()
+        lista_moneda = Moneda.objects.all()
+        lista_vendedor = Vendedor.objects.all()
+
+        context = {
+            'formProformaManoDeObra': formProformaManoDeObra,
+            'proformaManoDeObra': proformaManoDeObra,
+            'lista_bu': lista_bu,
+            'lista_pago': lista_pago,
+            'lista_moneda': lista_moneda,
+            'lista_vendedor': lista_vendedor,
+        }
+
+        return render(request, 'agregar_proforma_obra.html', context)
+
+    def post(self, request, pk):
+        proformaManoDeObra = get_object_or_404(ProformaManoDeObra, pk=pk)
+        formProformaManoDeObra = ProformaManoDeObraForm(request.POST, instance=proformaManoDeObra)
+
+        if formProformaManoDeObra.is_valid():
+            formProformaManoDeObra.save()
+            return redirect('proformamanodeobra')
+
+        # Si el formulario no es válido, volvemos a mostrarlo con los errores
+        lista_bu = Bu.objects.all()
+        lista_pago = Pago.objects.all()
+        lista_moneda = Moneda.objects.all()
+        lista_vendedor = Vendedor.objects.all()
+
+        context = {
+            'formProformaManoDeObra': formProformaManoDeObra,
+            'proformaManoDeObra': proformaManoDeObra,
+            'lista_bu': lista_bu,
+            'lista_pago': lista_pago,
+            'lista_moneda': lista_moneda,
+            'lista_vendedor': lista_vendedor,
+        }
+
+        return render(request, 'agregar_proforma_obra.html', context)
+
+
+
+
+class ProformaManoDeObraEliminarView(View):
+
+    def post(self, request, pk):
+        proformaManoDeObra = get_object_or_404(ProformaManoDeObra, pk=pk)
+        proformaManoDeObra.delete()
+        return JsonResponse({'message': 'Proforma eliminada correctamente'})
+    
+def duplicar_proforma_obra(request, proforma_id):
+    original_proforma_obra = ProformaManoDeObra.objects.get(pk=proforma_id)
+    
+    # Crear una nueva instancia de ProformaConsultoria con los mismos atributos que la original
+    nueva_proforma_obra = ProformaConsultoria.objects.create(
+        fecha=original_proforma_obra.fecha,
+        bu=original_proforma_obra.bu,
+        condicion_pago=original_proforma_obra.condicion_pago,
+        moneda=original_proforma_obra.moneda,
+        validez=original_proforma_obra.validez,
+        vendedor=original_proforma_obra.vendedor,
+        correo=original_proforma_obra.correo,
+        celular=original_proforma_obra.celular,
+        actividad=original_proforma_obra.actividad,
+        observacion=original_proforma_obra.observacion
+        # ... Copia otros campos si es necesario
+    )
+    
+    return redirect('proformamanodeobra')
+
+class CotizacionConsultoriaView(View):
+
+    def get(self, request):
+        listaCotizaciones = CotizacionConsultoria.objects.all()
+        context = {
+            'cotizacionesConsultoria': listaCotizaciones
+        }
+        return render(request, 'cotizacion_consultoria.html', context)
+
+
+class CotizacionConsultoriaAgregarView(View):
+
+    def get(self, request):
+        # Obtener las listas de objetos para cada modelo (puedes personalizar esto según tus necesidades)
+        lista_proformas_consultoria = ProformaConsultoria.objects.all()
+        lista_clientes = Cliente.objects.all()
+
+        # Crear una instancia del formulario de cotización
+        form_cotizacion = CotizacionConsultoriaForm()
+
+        context = {
+            # Agregar esta línea para pasar la variable cotizacion al contexto
+            'formCotizacion': form_cotizacion,
+            'lista_proformas_consultoria': lista_proformas_consultoria,
+            'lista_clientes': lista_clientes
+        }
+
+        return render(request, 'agregar_cotizacion_consultoria.html', context)
+
+    def post(self, request):
+        # Obtener las listas de objetos para cada modelo (puedes personalizar esto según tus necesidades)
+        lista_proformas_consultoria = ProformaConsultoria.objects.all()
+        lista_clientes = Cliente.objects.all()
+
+        # Crear una instancia del formulario de cotización con los datos enviados por el usuario
+        form_cotizacion = CotizacionConsultoriaForm(request.POST)
+
+        if form_cotizacion.is_valid():
+            form_cotizacion.save()
+            # Redirige a la lista de cotizaciones después de guardar correctamente
+            return redirect('cotizacionconsultoria')
+
+        context = {
+            'form_cotizacion': form_cotizacion,
+            'lista_proformas_consultoria': lista_proformas_consultoria,
+            'lista_clientes': lista_clientes,
+        }
+
+        return render(request, 'agregar_cotizacion_consultoria.html', context)
+
+
+class CotizacionConsultoriaEditarView(View):
+
+    def get(self, request, pk):
+        cotizacionConsultoria = get_object_or_404(CotizacionConsultoria, pk=pk)
+        form_cotizacion = CotizacionConsultoriaForm(instance=cotizacionConsultoria)
+
+        # Obtener las listas de objetos para cada modelo
+        lista_proformas_consultoria = ProformaConsultoria.objects.all()
+        lista_clientes = Cliente.objects.all()
+
+        context = {
+            'form_Cotizacion': form_cotizacion,
+            'cotizacionConsultoria': cotizacionConsultoria,
+            'lista_proformas_consultoria': lista_proformas_consultoria,
+            'lista_clientes': lista_clientes
+        }
+
+        return render(request, 'agregar_cotizacion_consultoria.html', context)
+
+    def post(self, request, pk):
+        cotizacionConsultoria = get_object_or_404(CotizacionConsultoria, pk=pk)
+        form_cotizacion = CotizacionConsultoriaForm(request.POST, instance=cotizacionConsultoria)
+
+        if form_cotizacion.is_valid():
+            form_cotizacion.save()
+            return redirect('cotizacionconsultoria')
+
+        # Si el formulario no es válido, volvemos a mostrarlo con los errores
+        lista_proformas_consultoria = ProformaConsultoria.objects.all()
+        lista_clientes = Cliente.objects.all()
+
+        context = {
+            'form_cotizacion': form_cotizacion,
+            'cotizacionConsultoria': cotizacionConsultoria,
+            'lista_proformas_consultoria': lista_proformas_consultoria,
+            'lista_clientes': lista_clientes
+        }
+
+        return render(request, 'agregar_cotizacion_consultoria.html', context)
+
+
+class CotizacionConsultoriaEliminarView(View):
+
+    def post(self, request, pk):
+        cotizacionConsultoria = get_object_or_404(CotizacionConsultoria, pk=pk)
+        cotizacionConsultoria.delete()
+        return JsonResponse({'message': 'Cotizacion eliminada correctamente'})
+    
+class CotizacionManoDeObraView(View):
+
+    def get(self, request):
+        listaCotizaciones = CotizacionManoDeObra.objects.all()
+        context = {
+            'cotizacionesObra': listaCotizaciones
+        }
+        return render(request, 'cotizacion_obra.html', context)
+
+
+class CotizacionManoDeObraAgregarView(View):
+
+    def get(self, request):
+        # Obtener las listas de objetos para cada modelo (puedes personalizar esto según tus necesidades)
+        lista_proformas_obra = ProformaManoDeObra.objects.all()
+        lista_clientes = Cliente.objects.all()
+
+        # Crear una instancia del formulario de cotización
+        form_cotizacion = CotizacionManoDeObraForm()
+
+        context = {
+            # Agregar esta línea para pasar la variable cotizacion al contexto
+            'formCotizacion': form_cotizacion,
+            'lista_proformas_obra': lista_proformas_obra,
+            'lista_clientes': lista_clientes
+        }
+
+        return render(request, 'agregar_cotizacion_obra.html', context)
+
+    def post(self, request):
+        # Obtener las listas de objetos para cada modelo (puedes personalizar esto según tus necesidades)
+        lista_proformas_obra = ProformaManoDeObra.objects.all()
+        lista_clientes = Cliente.objects.all()
+
+        # Crear una instancia del formulario de cotización con los datos enviados por el usuario
+        form_cotizacion = CotizacionManoDeObraForm(request.POST)
+
+        if form_cotizacion.is_valid():
+            form_cotizacion.save()
+            # Redirige a la lista de cotizaciones después de guardar correctamente
+            return redirect('cotizacionmanodeobra')
+
+        context = {
+            'form_cotizacion': form_cotizacion,
+            'lista_proformas_obra': lista_proformas_obra,
+            'lista_clientes': lista_clientes,
+        }
+
+        return render(request, 'agregar_cotizacion_obra.html', context)
+
+
+class CotizacionManoDeObraEditarView(View):
+
+    def get(self, request, pk):
+        cotizacionObra = get_object_or_404(CotizacionManoDeObra, pk=pk)
+        form_cotizacion = CotizacionManoDeObraForm(instance=cotizacionObra)
+
+        # Obtener las listas de objetos para cada modelo
+        lista_proformas_obra = ProformaManoDeObra.objects.all()
+        lista_clientes = Cliente.objects.all()
+
+        context = {
+            'form_Cotizacion': form_cotizacion,
+            'cotizacionObra': cotizacionObra,
+            'lista_proformas_obra': lista_proformas_obra,
+            'lista_clientes': lista_clientes
+        }
+
+        return render(request, 'agregar_cotizacion_obra.html', context)
+
+    def post(self, request, pk):
+        cotizacionObra = get_object_or_404(CotizacionManoDeObra, pk=pk)
+        form_cotizacion = CotizacionManoDeObraForm(request.POST, instance=cotizacionObra)
+
+        if form_cotizacion.is_valid():
+            form_cotizacion.save()
+            return redirect('cotizacionmanodeobra')
+
+        # Si el formulario no es válido, volvemos a mostrarlo con los errores
+        lista_proformas_obra = ProformaManoDeObra.objects.all()
+        lista_clientes = Cliente.objects.all()
+
+        context = {
+            'form_cotizacion': form_cotizacion,
+            'cotizacionObra': cotizacionObra,
+            'lista_proformas_obra': lista_proformas_obra,
+            'lista_clientes': lista_clientes
+        }
+
+        return render(request, 'agregar_cotizacion_obra.html', context)
+
+
+class CotizacionManoDeObraEliminarView(View):
+
+    def post(self, request, pk):
+        cotizacionObra = get_object_or_404(CotizacionManoDeObra, pk=pk)
+        cotizacionObra.delete()
+        return JsonResponse({'message': 'Cotizacion eliminada correctamente'})
+    
+
+def detalle_cotizacion_consultoria(request, pk, detalle_id=None):
+    cotizacion = get_object_or_404(CotizacionConsultoria, pk=pk)
+    detallesConsultoria = descripcionCotizacionConsultoria.objects.filter(cotizacion=cotizacion)
+
+    # Si se proporciona un detalle_id, es una solicitud de edición
+    if detalle_id:
+        detalleConsultoria = get_object_or_404(descripcionCotizacionConsultoria, pk=detalle_id)
+    else:
+        detalleConsultoria = None
+
+    if request.method == 'POST':
+        # Si es una edición, instanciamos el formulario con el detalle existente
+        # Si es una adición, instanciamos el formulario sin datos vinculados
+        form = DescripcionCotizacionConsultoriaForm(request.POST, instance=detalleConsultoria)
+        if form.is_valid():
+            nuevo_detalle_consultoria = form.save(commit=False)
+            nuevo_detalle_consultoria.cotizacion = cotizacion
+            nuevo_detalle_consultoria.save()
+            # Imprime el nuevo detalle para verificar si está bien guardado
+            print("Nuevo detalle guardado:", nuevo_detalle_consultoria)
+            return redirect('detalle_cotizacion_consultoria', pk=pk)
+        else:
+            # Imprime los errores del formulario en la consola
+            print("Formulario inválido:", form.errors)
+    else:
+        # Si no hay detalle existente, muestra el formulario vacío
+        form = DescripcionCotizacionConsultoriaForm(
+            initial={'cotizacion': cotizacion}, instance=detalleConsultoria)
+
+    # ---------------CAMBIO DOLAR-----------------------------
+    # Procesar el formulario de conversión a dólares
+
+    
+
+    context = {
+        'cotizacion': cotizacion,
+        'detallesConsultoria': detallesConsultoria,
+        'form': form,
+    }
+    return render(request, 'detalle_cotizacion_consultoria.html', context)
+
+# ------------FIN COTIZACION-------------------
+
+
+class DetalleConsultoriaEliminarView(View):
+
+    def post(self, request, pk):
+        detalleConsultoria = get_object_or_404(descripcionCotizacionConsultoria, pk=pk)
+        cotizacion = detalleConsultoria.cotizacion
+        detalleConsultoria.delete()
+
+        # Recalcular y actualizar los valores de la columna "item"
+        detallesConsultoria = descripcionCotizacionConsultoria.objects.filter(cotizacion=cotizacion)
+        for index, detalleConsultoria in enumerate(detallesConsultoria, start=1):
+            detalleConsultoria.item = index
+            detalleConsultoria.save()
+
+        return JsonResponse({'message': 'detalle eliminada correctamente'})
+    
+def detalle_cotizacion_obra(request, pk, detalle_id=None):
+    cotizacion = get_object_or_404(CotizacionManoDeObra, pk=pk)
+    detallesObra = descripcionCotizacionManoDeObra.objects.filter(cotizacion=cotizacion)
+
+    # Si se proporciona un detalle_id, es una solicitud de edición
+    if detalle_id:
+        detalleObra = get_object_or_404(descripcionCotizacionManoDeObra, pk=detalle_id)
+    else:
+        detalleObra = None
+    
+    url = "https://openexchangerates.org/api/latest.json?app_id=7d48f3c6338b4e96838cf8d894162b40&symbols=PEN,USD"
+    try:
+        response = requests.get(url)
+        if response.status_code == 200:
+            data = json.loads(response.text)
+            rates = data["rates"]
+            pen_rate = rates.get("PEN")
+            usd_rate = rates.get("USD")
+        else:
+            pen_rate = None
+            usd_rate = None
+    except requests.exceptions.RequestException as e:
+        # Si hay un error en la solicitud, puedes manejarlo aquí
+        pen_rate = None
+        usd_rate = None
+    # Procesar el formulario de conversión a dólares
+    
+    if request.method == 'POST' and 'conversion-form' in request.POST:
+        pen_rate = request.POST.get('pen_rate')
+        if pen_rate:
+            pen_rate = Decimal(pen_rate)
+            for detalleObra in detallesObra:
+                detalleObra.precio_unitario = round(detalleObra.precio_unitario / pen_rate, 2)
+                detalleObra.save()
+
+    if request.method == 'POST':
+        # Si es una edición, instanciamos el formulario con el detalle existente
+        # Si es una adición, instanciamos el formulario sin datos vinculados
+        form = DescripcionCotizacionManoDeObraForm(request.POST, instance=detalleObra)
+        if form.is_valid():
+            nuevo_detalle_obra = form.save(commit=False)
+            nuevo_detalle_obra.cotizacion = cotizacion 
+            if cotizacion.proforma.moneda.tipo == 'DOLARES':
+                nuevo_detalle_obra.precio_unitario /= Decimal(pen_rate)
+            nuevo_detalle_obra.save()
+            # Imprime el nuevo detalle para verificar si está bien guardado
+            print("Nuevo detalle guardado:", nuevo_detalle_obra)
+            return redirect('detalle_cotizacion_obra', pk=pk)
+        else:
+            # Imprime los errores del formulario en la consola
+            print("Formulario inválido:", form.errors)
+    else:
+        # Si no hay detalle existente, muestra el formulario vacío
+        form = DescripcionCotizacionManoDeObraForm(
+            initial={'cotizacion': cotizacion}, instance=detalleObra)
+
+    # ---------------CAMBIO DOLAR-----------------------------
+    # Procesar el formulario de conversión a dólares
+
+    
+
+    context = {
+        'cotizacion': cotizacion,
+        'detallesObra': detallesObra,
+        'form': form,
+        'pen_rate': pen_rate,
+        'usd_rate': usd_rate
+    }
+    return render(request, 'detalle_cotizacion_obra.html', context)
+
+class DetalleManoDeObraEliminarView(View):
+
+    def post(self, request, pk):
+        detalleObra = get_object_or_404(descripcionCotizacionManoDeObra, pk=pk)
+        cotizacion = detalleObra.cotizacion
+        detalleObra.delete()
+
+        # Recalcular y actualizar los valores de la columna "item"
+        detallesObra = descripcionCotizacionManoDeObra.objects.filter(cotizacion=cotizacion)
+        for index, detalleObra in enumerate(detallesObra, start=1):
+            detalleObra.item = index
+            detalleObra.save()
+
+        return JsonResponse({'message': 'detalle eliminada correctamente'})

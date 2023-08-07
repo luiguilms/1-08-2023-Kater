@@ -216,67 +216,22 @@ class descripcionCotizacionManoDeObra(models.Model):
 
 
 #Signals 
-'''
-@receiver(post_save, sender=Proforma)
-def update_vendedor_info(sender, instance, created, **kwargs):
-    if created and instance.vendedor:
-        if not instance.correo:
-            instance.correo = instance.vendedor.correo
-        if not instance.celular:
-            instance.celular = instance.vendedor.celular
-        instance.save()
 
-
-@receiver(pre_save, sender=Proforma)
-def update_vendedor_info(sender, instance, **kwargs):
+# Señal para actualizar campos de correo y celular al agregar o editar una ProformaConsultoria
+@receiver([post_save, pre_save], sender=ProformaManoDeObra)
+def update_vendedor_info_obra(sender, instance, **kwargs):
     if instance.vendedor:
-        vendedor_actual = instance.vendedor
         try:
-            # Obtener la instancia existente de Proforma desde la base de datos
-            vendedor_antiguo = Proforma.objects.get(pk=instance.pk)
-            
-            if vendedor_actual != vendedor_antiguo.vendedor:
-                instance.correo = vendedor_actual.correo
-                instance.celular = vendedor_actual.celular
-        except Proforma.DoesNotExist:
-            # La instancia de Proforma es nueva, no es necesario hacer nada
-            pass
-@receiver(pre_save, sender=Proforma)
-def update_vendedor_info(sender, instance, **kwargs):
-    if instance.vendedor:
-        instance.correo = instance.vendedor.correo
-        instance.celular = instance.vendedor.celular
-
-@receiver(post_save, sender=ProformaConsultoria)
-def update_vendedor_info(sender, instance, created, **kwargs):
-    if created and instance.vendedor:
-        if not instance.correo:
+            old_instance = sender.objects.get(pk=instance.pk)
+            if old_instance.vendedor != instance.vendedor or not instance.pk:
+                instance.correo = instance.vendedor.correo
+                instance.celular = instance.vendedor.celular
+            else:
+                instance.correo = old_instance.correo
+                instance.celular = old_instance.celular
+        except sender.DoesNotExist:
             instance.correo = instance.vendedor.correo
-        if not instance.celular:
             instance.celular = instance.vendedor.celular
-        instance.save()
-
-
-@receiver(pre_save, sender=ProformaConsultoria)
-def update_vendedor_info(sender, instance, **kwargs):
-    if instance.vendedor:
-        vendedor_actual = instance.vendedor
-        try:
-            # Obtener la instancia existente de Proforma desde la base de datos
-            vendedor_antiguo = ProformaConsultoria.objects.get(pk=instance.pk)
-            
-            if vendedor_actual != vendedor_antiguo.vendedor:
-                instance.correo = vendedor_actual.correo
-                instance.celular = vendedor_actual.celular
-        except Proforma.DoesNotExist:
-            # La instancia de Proforma es nueva, no es necesario hacer nada
-            pass
-@receiver(pre_save, sender=ProformaConsultoria)
-def update_vendedor_info(sender, instance, **kwargs):
-    if instance.vendedor:
-        instance.correo = instance.vendedor.correo
-        instance.celular = instance.vendedor.celular
-'''
 
 # Señal para actualizar campos de correo y celular al agregar o editar una ProformaConsultoria
 @receiver([post_save, pre_save], sender=ProformaConsultoria)
@@ -322,6 +277,48 @@ def update_descripcionCotizacion_info(sender, instance, **kwargs):
 
 @receiver(pre_save, sender=descripcionCotizacion)
 def update_precio_total(sender, instance, **kwargs):
+    if instance.cantidad is not None and instance.precio_unitario is not None:
+        try:
+            precio_unitario_decimal = Decimal(instance.precio_unitario)
+        except (decimal.InvalidOperation, TypeError, ValueError):
+            precio_unitario_decimal = Decimal('0')
+
+        descuento_decimal = Decimal(instance.descuento) / Decimal('100') if instance.descuento is not None else Decimal('0')
+        precio_unitario_descuento = precio_unitario_decimal * (1 - descuento_decimal)
+        instance.precio_total = instance.cantidad * precio_unitario_descuento
+
+@receiver(pre_save, sender=descripcionCotizacionConsultoria)
+def update_descripcionCotizacion_info_consultoria(sender, instance, **kwargs):
+    nombre_repuesto = instance.codigo
+    if nombre_repuesto:
+        instance.descripcion = nombre_repuesto.nombre
+        instance.precio_unitario = nombre_repuesto.precio_unitario
+
+
+
+@receiver(pre_save, sender=descripcionCotizacionConsultoria)
+def update_precio_total_consultoria(sender, instance, **kwargs):
+    if instance.cantidad is not None and instance.precio_unitario is not None:
+        try:
+            precio_unitario_decimal = Decimal(instance.precio_unitario)
+        except (decimal.InvalidOperation, TypeError, ValueError):
+            precio_unitario_decimal = Decimal('0')
+
+        descuento_decimal = Decimal(instance.descuento) / Decimal('100') if instance.descuento is not None else Decimal('0')
+        precio_unitario_descuento = precio_unitario_decimal * (1 - descuento_decimal)
+        instance.precio_total = instance.cantidad * precio_unitario_descuento
+
+@receiver(pre_save, sender=descripcionCotizacionManoDeObra)
+def update_descripcionCotizacion_info_obra(sender, instance, **kwargs):
+    nombre_repuesto = instance.codigo
+    if nombre_repuesto:
+        instance.descripcion = nombre_repuesto.nombre
+        instance.precio_unitario = nombre_repuesto.precio_unitario
+
+
+
+@receiver(pre_save, sender=descripcionCotizacionManoDeObra)
+def update_precio_total_obra(sender, instance, **kwargs):
     if instance.cantidad is not None and instance.precio_unitario is not None:
         try:
             precio_unitario_decimal = Decimal(instance.precio_unitario)

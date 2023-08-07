@@ -138,6 +138,25 @@ class CotizacionForm(forms.ModelForm):
             'proforma': forms.Select(attrs={'class': 'form-control'}),
             'cliente': forms.Select(attrs={'class': 'form-control'}),
         }
+
+class CotizacionConsultoriaForm(forms.ModelForm):
+    class Meta:
+        model = CotizacionConsultoria
+        fields = ['proforma', 'cliente']
+        widgets = {
+            'proforma': forms.Select(attrs={'class': 'form-control'}),
+            'cliente': forms.Select(attrs={'class': 'form-control'}),
+        }
+
+class CotizacionManoDeObraForm(forms.ModelForm):
+    class Meta:
+        model = CotizacionManoDeObra
+        fields = ['proforma', 'cliente']
+        widgets = {
+            'proforma': forms.Select(attrs={'class': 'form-control'}),
+            'cliente': forms.Select(attrs={'class': 'form-control'}),
+        }
+
 class PiezasRepuestoForm(forms.ModelForm):
     class Meta:
         model = piezasRepuesto
@@ -157,6 +176,45 @@ class DescripcionCotizacionForm(forms.ModelForm):
         widgets = {
             'cotizacion': forms.HiddenInput(),
             'codigo': descripcionWidget,
+            'descripcion' :forms.HiddenInput(),
+            'precio_unitario': forms.HiddenInput(),
+            'precio_total': forms.HiddenInput(),
+            'descuento': forms.Select(attrs={'required': 'required'}),
+        }
+
+class descripcionWidgetConsultoria(s2forms.ModelSelect2Widget):
+    search_fields = [
+        "codigo__icontains"
+    ]
+    def label_from_instance(self, obj):
+        return obj.codigo
+    
+class DescripcionCotizacionConsultoriaForm(forms.ModelForm):
+    class Meta:
+        model = descripcionCotizacionConsultoria
+        fields = '__all__'
+        widgets = {
+            'cotizacion': forms.HiddenInput(),
+            'codigo': descripcionWidgetConsultoria,
+            'descripcion' :forms.HiddenInput(),
+            'precio_unitario': forms.HiddenInput(),
+            'precio_total': forms.HiddenInput(),
+            'descuento': forms.Select(attrs={'required': 'required'}),
+        }
+
+class descripcionWidgetManoDeObra(s2forms.ModelSelect2Widget):
+    search_fields = [
+        "codigo__icontains"
+    ]
+    def label_from_instance(self, obj):
+        return obj.codigo
+class DescripcionCotizacionManoDeObraForm(forms.ModelForm):
+    class Meta:
+        model = descripcionCotizacionManoDeObra
+        fields = '__all__'
+        widgets = {
+            'cotizacion': forms.HiddenInput(),
+            'codigo': descripcionWidgetManoDeObra,
             'descripcion' :forms.HiddenInput(),
             'precio_unitario': forms.HiddenInput(),
             'precio_total': forms.HiddenInput(),
